@@ -12,22 +12,74 @@ using UnityEngine.SceneManagement;
 ///     but the transport and RPC logic remains here. It's possible we could pull
 /// </summary>
 public class LobbyOrchestrator : NetworkBehaviour {
+    [SerializeField] private MainMatchScreen _mainMatchScreen; // Add Main Match Screen
     [SerializeField] private MainLobbyScreen _mainLobbyScreen;
     [SerializeField] private CreateLobbyScreen _createScreen;
     [SerializeField] private RoomScreen _roomScreen;
 
     private void Start() {
-        _mainLobbyScreen.gameObject.SetActive(true);
+        _mainLobbyScreen.gameObject.SetActive(false);
         _createScreen.gameObject.SetActive(false);
         _roomScreen.gameObject.SetActive(false);
+        _mainMatchScreen.gameObject.SetActive(true); // Add Main Match Screen
 
         CreateLobbyScreen.LobbyCreated += CreateLobby;
         LobbyRoomPanel.LobbySelected += OnLobbySelected;
         RoomScreen.LobbyLeft += OnLobbyLeft;
         RoomScreen.StartPressed += OnGameStart;
+        MainMatchScreen.NormalSelected += OnNormalSelected; // Add Main Match Screen Actions
+        MainMatchScreen.FriendSelected += OnFriendSelected; // Add Main Match Screen Actions
+        MainMatchScreen.RankSelected += OnRankSelected; // Add Main Match Screen Actions
+
         
         NetworkObject.DestroyWithScene = true;
     }
+
+    #region Main Match
+
+    private void OnNormalSelected()
+    {
+        using (new Load("Joining Normal Game...")) {
+            try {
+                _mainMatchScreen.gameObject.SetActive(false);
+                _mainLobbyScreen.gameObject.SetActive(true);
+            }
+            catch (Exception e) {
+                Debug.LogError(e);
+                CanvasUtilities.Instance.ShowError("Failed joining lobby");
+            }
+        }
+    }
+
+    private void OnRankSelected()
+    {
+        using (new Load("Joining Rank Game...")) {
+            try {
+                _mainMatchScreen.gameObject.SetActive(false);
+                _mainLobbyScreen.gameObject.SetActive(true);
+            }
+            catch (Exception e) {
+                Debug.LogError(e);
+                CanvasUtilities.Instance.ShowError("Failed joining lobby");
+            }
+        }
+    }
+
+    private void OnFriendSelected()
+    {
+        using (new Load("Joining Friend Game...")) {
+            try {
+                _mainMatchScreen.gameObject.SetActive(false);
+                _createScreen.gameObject.SetActive(true);
+            }
+            catch (Exception e) {
+                Debug.LogError(e);
+                CanvasUtilities.Instance.ShowError("Failed joining lobby");
+            }
+        }
+    }
+
+    #endregion
 
     #region Main Lobby
 
@@ -37,7 +89,7 @@ public class LobbyOrchestrator : NetworkBehaviour {
                 await MatchmakingService.JoinLobbyWithAllocation(lobby.Id);
 
                 _mainLobbyScreen.gameObject.SetActive(false);
-                _roomScreen.gameObject.SetActive(true);
+                _mainLobbyScreen.gameObject.SetActive(true);
 
                 NetworkManager.Singleton.StartClient();
             }
@@ -47,8 +99,6 @@ public class LobbyOrchestrator : NetworkBehaviour {
             }
         }
     }
-
- 
 
     #endregion
 

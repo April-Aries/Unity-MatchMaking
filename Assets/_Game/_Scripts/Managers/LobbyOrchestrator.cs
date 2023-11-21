@@ -18,10 +18,10 @@ public class LobbyOrchestrator : NetworkBehaviour {
     [SerializeField] private RoomScreen _roomScreen;
 
     private void Start() {
-        _mainLobbyScreen.gameObject.SetActive(false);
-        _createScreen.gameObject.SetActive(false);
-        _roomScreen.gameObject.SetActive(false);
-        _mainMatchScreen.gameObject.SetActive(true); // Add Main Match Screen
+        if (_mainLobbyScreen != null) _mainLobbyScreen.gameObject.SetActive(false);
+        if (_createScreen != null) _createScreen.gameObject.SetActive(false);
+        if (_roomScreen != null) _roomScreen.gameObject.SetActive(false);
+        if (_mainMatchScreen != null) _mainMatchScreen.gameObject.SetActive(true); // Add Main Match Screen
 
         CreateLobbyScreen.LobbyCreated += CreateLobby;
         LobbyRoomPanel.LobbySelected += OnLobbySelected;
@@ -46,7 +46,7 @@ public class LobbyOrchestrator : NetworkBehaviour {
             }
             catch (Exception e) {
                 Debug.LogError(e);
-                CanvasUtilities.Instance.ShowError("Failed joining lobby");
+                CanvasUtilities.Instance.ShowError("Failed joining normal game");
             }
         }
     }
@@ -60,7 +60,7 @@ public class LobbyOrchestrator : NetworkBehaviour {
             }
             catch (Exception e) {
                 Debug.LogError(e);
-                CanvasUtilities.Instance.ShowError("Failed joining lobby");
+                CanvasUtilities.Instance.ShowError("Failed joining rank game");
             }
         }
     }
@@ -74,7 +74,7 @@ public class LobbyOrchestrator : NetworkBehaviour {
             }
             catch (Exception e) {
                 Debug.LogError(e);
-                CanvasUtilities.Instance.ShowError("Failed joining lobby");
+                CanvasUtilities.Instance.ShowError("Failed joining friend game");
             }
         }
     }
@@ -89,7 +89,7 @@ public class LobbyOrchestrator : NetworkBehaviour {
                 await MatchmakingService.JoinLobbyWithAllocation(lobby.Id);
 
                 _mainLobbyScreen.gameObject.SetActive(false);
-                _mainLobbyScreen.gameObject.SetActive(true);
+                _roomScreen.gameObject.SetActive(true);
 
                 NetworkManager.Singleton.StartClient();
             }

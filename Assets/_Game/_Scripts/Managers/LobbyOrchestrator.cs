@@ -16,12 +16,14 @@ public class LobbyOrchestrator : NetworkBehaviour {
     [SerializeField] private MainLobbyScreen _mainLobbyScreen;
     [SerializeField] private CreateLobbyScreen _createScreen;
     [SerializeField] private RoomScreen _roomScreen;
+    [SerializeField] private FriendScreen _friendScreen;
 
     private void Start() {
         if (_mainLobbyScreen != null) _mainLobbyScreen.gameObject.SetActive(false);
         if (_createScreen != null) _createScreen.gameObject.SetActive(false);
         if (_roomScreen != null) _roomScreen.gameObject.SetActive(false);
         if (_mainMatchScreen != null) _mainMatchScreen.gameObject.SetActive(true); // Add Main Match Screen
+        if (_friendScreen != null) _friendScreen.gameObject.SetActive(false);
 
         CreateLobbyScreen.LobbyCreated += CreateLobby;
         LobbyRoomPanel.LobbySelected += OnLobbySelected;
@@ -30,10 +32,43 @@ public class LobbyOrchestrator : NetworkBehaviour {
         MainMatchScreen.NormalSelected += OnNormalSelected; // Add Main Match Screen Actions
         MainMatchScreen.FriendSelected += OnFriendSelected; // Add Main Match Screen Actions
         MainMatchScreen.RankSelected += OnRankSelected; // Add Main Match Screen Actions
+        FriendScreen.CreateSelected += OnFriendCreateSelected; // Add Friend Actions
+        FriendScreen.JoinSelected += OnFriendJoinSelected; // Add Friend Actions
 
-        
         NetworkObject.DestroyWithScene = true;
     }
+
+    #region Friend
+    
+    private void OnFriendCreateSelected()
+    {
+        using (new Load("Loading Create Room Screen...")) {
+            try {
+                _friendScreen.gameObject.SetActive(false);
+                _createScreen.gameObject.SetActive(true);
+            }
+            catch (Exception e) {
+                Debug.LogError(e);
+                CanvasUtilities.Instance.ShowError("Failed load create room screen");
+            }
+        }
+    }
+
+    private void OnFriendJoinSelected()
+    {
+        using (new Load("Loading Join Room Screen...")) {
+            try {
+                _friendScreen.gameObject.SetActive(false);
+                _mainLobbyScreen.gameObject.SetActive(true);
+            }
+            catch (Exception e) {
+                Debug.LogError(e);
+                CanvasUtilities.Instance.ShowError("Failed load join room screen");
+            }
+        }
+    }
+
+    #endregion
 
     #region Main Match
 
@@ -70,7 +105,7 @@ public class LobbyOrchestrator : NetworkBehaviour {
         using (new Load("Joining Friend Game...")) {
             try {
                 _mainMatchScreen.gameObject.SetActive(false);
-                _createScreen.gameObject.SetActive(true);
+                _friendScreen.gameObject.SetActive(true);
             }
             catch (Exception e) {
                 Debug.LogError(e);

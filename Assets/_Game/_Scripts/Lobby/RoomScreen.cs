@@ -15,6 +15,7 @@ public class RoomScreen : MonoBehaviour {
     [SerializeField] private LobbyPlayerPanel _playerPanelPrefab;
     [SerializeField] private Transform _playerPanelParent;
     [SerializeField] private TMP_Text _waitingText;
+    //[SerializeField] private TMP_Text _lobbyID;
     [SerializeField] private GameObject _startButton, _readyButton;
 
     private readonly List<LobbyPlayerPanel> _playerPanels = new();
@@ -74,6 +75,7 @@ public class RoomScreen : MonoBehaviour {
 
     private void OnCurrentLobbyRefreshed(Lobby lobby) {
         _waitingText.text = $"Waiting on players... {lobby.Players.Count}/{lobby.MaxPlayers}";
+        //_lobbyID.text = $"LobbyID: {lobby.Id}";
     }
 
     public void OnReadyClicked() {

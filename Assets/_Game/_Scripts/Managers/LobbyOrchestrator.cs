@@ -174,7 +174,6 @@ public class LobbyOrchestrator : NetworkBehaviour {
 
         // Client uses this in case host destroys the lobby
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
-
  
     }
 

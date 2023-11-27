@@ -100,6 +100,16 @@ public static class MatchmakingService {
         PeriodicallyRefreshLobby();
     }
 
+    // This function is used for Friend game X join
+    public static async Task JoinLobbyWithAllocationCode(string lobbyCode) {
+        _currentLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode);
+        var a = await RelayService.Instance.JoinAllocationAsync(_currentLobby.Data[Constants.JoinKey].Value);
+
+        Transport.SetClientRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData, a.HostConnectionData);
+
+        PeriodicallyRefreshLobby();
+    }
+
     private static async void PeriodicallyRefreshLobby() {
         _updateLobbySource = new CancellationTokenSource();
         await Task.Delay(LobbyRefreshRate * 1000);

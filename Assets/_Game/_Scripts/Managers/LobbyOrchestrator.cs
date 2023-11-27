@@ -47,7 +47,6 @@ public class LobbyOrchestrator : NetworkBehaviour {
     {
         using (new Load("Joining Lobby...")) {
             try {
-                Debug.Log( $"LobbyCode: {code}" );
                 await MatchmakingService.JoinLobbyWithAllocationCode( code );
 
                 /* Page turns: Unity will do so!

@@ -16,7 +16,7 @@ public class RoomScreen : MonoBehaviour {
     [SerializeField] private Transform _playerPanelParent;
     [SerializeField] private TMP_Text _waitingText;
     [SerializeField] private TMP_Text _lobbyCode;
-    [SerializeField] private GameObject _startButton, _readyButton;
+    [SerializeField] private GameObject _startButton, _readyButton, _leaveButton;
 
     private readonly List<LobbyPlayerPanel> _playerPanels = new();
     private bool _allReady;

@@ -17,6 +17,7 @@ public class LobbyOrchestrator : NetworkBehaviour {
     [SerializeField] private CreateLobbyScreen _createScreen;
     [SerializeField] private RoomScreen _roomScreen;
     [SerializeField] private FriendScreen _friendScreen;
+    [SerializeField] private FriendJoinScreen _friendJoinScreen;
 
     private void Start() {
         if (_mainLobbyScreen != null) _mainLobbyScreen.gameObject.SetActive(false);
@@ -24,6 +25,7 @@ public class LobbyOrchestrator : NetworkBehaviour {
         if (_roomScreen != null) _roomScreen.gameObject.SetActive(false);
         if (_mainMatchScreen != null) _mainMatchScreen.gameObject.SetActive(true); // Add Main Match Screen
         if (_friendScreen != null) _friendScreen.gameObject.SetActive(false);
+        if (_friendJoinScreen != null ) _friendJoinScreen.gameObject.SetActive(false);
 
         CreateLobbyScreen.LobbyCreated += CreateLobby;
         LobbyRoomPanel.LobbySelected += OnLobbySelected;
@@ -34,22 +36,64 @@ public class LobbyOrchestrator : NetworkBehaviour {
         MainMatchScreen.RankSelected += OnRankSelected; // Add Main Match Screen Actions
         FriendScreen.CreateSelected += OnFriendCreateSelected; // Add Friend Actions
         FriendScreen.JoinSelected += OnFriendJoinSelected; // Add Friend Actions
+        FriendJoinScreen.JoinLobbySelected += OnJoinLobbySelected; // Add Friend Join Action
 
         NetworkObject.DestroyWithScene = true;
     }
 
-    #region Friend
-    
-    private void OnFriendCreateSelected()
+    #region Friend Join
+
+    private async void OnJoinLobbySelected( string code )
     {
-        using (new Load("Loading Create Room Screen...")) {
+        using (new Load("Joining Lobby...")) {
             try {
-                _friendScreen.gameObject.SetActive(false);
-                _createScreen.gameObject.SetActive(true);
+                Debug.Log( $"LobbyCode: {code}" );
+                await MatchmakingService.JoinLobbyWithAllocationCode( code );
+
+                /* Page turns: Unity will do so!
+                _friendJoinScreen.gameObject.SetActive(false);
+                _roomScreen.gameObject.SetActive(true);
+                */
+
+                NetworkManager.Singleton.StartClient();
             }
             catch (Exception e) {
                 Debug.LogError(e);
-                CanvasUtilities.Instance.ShowError("Failed load create room screen");
+                CanvasUtilities.Instance.ShowError("Failed joining lobby");
+            }
+        }
+    }
+
+    #endregion
+
+    #region Friend
+    
+    private async void OnFriendCreateSelected()
+    {
+        using (new Load("creating room...")) {
+            try {
+                
+                // Create a lobby
+                var data = new LobbyData
+                {
+                    MaxPlayers = 2,
+                    Difficulty = 0,
+                    Type = 1
+                };
+
+                await MatchmakingService.CreateLobbyWithAllocation(data);
+
+                /* Pages turns: Unity will do so!
+                _friendScreen.gameObject.SetActive(false);
+                _roomScreen.gameObject.SetActive(true);
+                */
+
+                // Starting the host immediately will keep the relay server alive
+                NetworkManager.Singleton.StartHost();
+            }
+            catch (Exception e) {
+                Debug.LogError(e);
+                CanvasUtilities.Instance.ShowError("Failed create room");
             }
         }
     }
@@ -59,7 +103,7 @@ public class LobbyOrchestrator : NetworkBehaviour {
         using (new Load("Loading Join Room Screen...")) {
             try {
                 _friendScreen.gameObject.SetActive(false);
-                _mainLobbyScreen.gameObject.SetActive(true);
+                _friendJoinScreen.gameObject.SetActive(true);
             }
             catch (Exception e) {
                 Debug.LogError(e);

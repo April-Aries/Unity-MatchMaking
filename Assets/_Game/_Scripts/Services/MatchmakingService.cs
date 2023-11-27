@@ -66,7 +66,7 @@ public static class MatchmakingService {
             }
         };
 
-        _currentLobby = await Lobbies.Instance.CreateLobbyAsync(data.Name, data.MaxPlayers, options);
+        _currentLobby = await Lobbies.Instance.CreateLobbyAsync( "New", data.MaxPlayers, options);
 
         Transport.SetHostRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData);
 

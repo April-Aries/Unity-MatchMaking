@@ -21,7 +21,6 @@ public class CreateLobbyScreen : MonoBehaviour {
 
     public void OnCreateClicked() {
         var lobbyData = new LobbyData {
-            Name = _nameInput.text,
             MaxPlayers = 2,
             Difficulty = _difficultyDropdown.value,
             Type = _typeDropdown.value
@@ -32,7 +31,6 @@ public class CreateLobbyScreen : MonoBehaviour {
 }
 
 public struct LobbyData {
-    public string Name;
     public int MaxPlayers;
     public int Difficulty;
     public int Type;

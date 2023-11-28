@@ -31,11 +31,7 @@ public class LobbyOrchestrator : NetworkBehaviour {
         LobbyRoomPanel.LobbySelected += OnLobbySelected;
         RoomScreen.LobbyLeft += OnLobbyLeft;
         RoomScreen.StartPressed += OnGameStart;
-        MainMatchScreen.NormalSelected += OnNormalSelected; // Add Main Match Screen Actions
-        MainMatchScreen.FriendSelected += OnFriendSelected; // Add Main Match Screen Actions
-        MainMatchScreen.RankSelected += OnRankSelected; // Add Main Match Screen Actions
         FriendScreen.CreateSelected += OnFriendCreateSelected; // Add Friend Actions
-        FriendScreen.JoinSelected += OnFriendJoinSelected; // Add Friend Actions
         FriendJoinScreen.JoinLobbySelected += OnJoinLobbySelected; // Add Friend Join Action
 
         NetworkObject.DestroyWithScene = true;
@@ -48,12 +44,6 @@ public class LobbyOrchestrator : NetworkBehaviour {
         using (new Load("Joining Lobby...")) {
             try {
                 await MatchmakingService.JoinLobbyWithAllocationCode( code );
-
-                /* Page turns: Unity will do so!
-                _friendJoinScreen.gameObject.SetActive(false);
-                _roomScreen.gameObject.SetActive(true);
-                */
-
                 NetworkManager.Singleton.StartClient();
             }
             catch (Exception e) {
@@ -82,77 +72,12 @@ public class LobbyOrchestrator : NetworkBehaviour {
 
                 await MatchmakingService.CreateLobbyWithAllocation(data);
 
-                /* Pages turns: Unity will do so!
-                _friendScreen.gameObject.SetActive(false);
-                _roomScreen.gameObject.SetActive(true);
-                */
-
                 // Starting the host immediately will keep the relay server alive
                 NetworkManager.Singleton.StartHost();
             }
             catch (Exception e) {
                 Debug.LogError(e);
                 CanvasUtilities.Instance.ShowError("Failed create room");
-            }
-        }
-    }
-
-    private void OnFriendJoinSelected()
-    {
-        using (new Load("Loading Join Room Screen...")) {
-            try {
-                _friendScreen.gameObject.SetActive(false);
-                _friendJoinScreen.gameObject.SetActive(true);
-            }
-            catch (Exception e) {
-                Debug.LogError(e);
-                CanvasUtilities.Instance.ShowError("Failed load join room screen");
-            }
-        }
-    }
-
-    #endregion
-
-    #region Main Match
-
-    private void OnNormalSelected()
-    {
-        using (new Load("Joining Normal Game...")) {
-            try {
-                _mainMatchScreen.gameObject.SetActive(false);
-                _mainLobbyScreen.gameObject.SetActive(true);
-            }
-            catch (Exception e) {
-                Debug.LogError(e);
-                CanvasUtilities.Instance.ShowError("Failed joining normal game");
-            }
-        }
-    }
-
-    private void OnRankSelected()
-    {
-        using (new Load("Joining Rank Game...")) {
-            try {
-                _mainMatchScreen.gameObject.SetActive(false);
-                _mainLobbyScreen.gameObject.SetActive(true);
-            }
-            catch (Exception e) {
-                Debug.LogError(e);
-                CanvasUtilities.Instance.ShowError("Failed joining rank game");
-            }
-        }
-    }
-
-    private void OnFriendSelected()
-    {
-        using (new Load("Joining Friend Game...")) {
-            try {
-                _mainMatchScreen.gameObject.SetActive(false);
-                _friendScreen.gameObject.SetActive(true);
-            }
-            catch (Exception e) {
-                Debug.LogError(e);
-                CanvasUtilities.Instance.ShowError("Failed joining friend game");
             }
         }
     }

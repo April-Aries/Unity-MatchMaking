@@ -100,7 +100,7 @@ public static class MatchmakingService {
         PeriodicallyRefreshLobby();
     }
 
-    // This function is used for Friend game X join
+    // This function is used for Friend game X join, but with problem....
     public static async Task JoinLobbyWithAllocationCode(string lobbyCode) {
         _currentLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode);
         var a = await RelayService.Instance.JoinAllocationAsync(_currentLobby.Data[Constants.JoinKey].Value);

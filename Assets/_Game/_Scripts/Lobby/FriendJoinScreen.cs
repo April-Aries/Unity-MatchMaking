@@ -15,6 +15,6 @@ public class FriendJoinScreen : MonoBehaviour
 
     public void JoinClicked()
     {
-        JoinLobbySelected?.Invoke( _joinCodeText.text );
+        JoinLobbySelected?.Invoke( _joinCodeText.text.Replace("\u200B", "") );
     }
 }

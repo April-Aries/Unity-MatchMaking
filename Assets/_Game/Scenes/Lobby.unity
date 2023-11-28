@@ -4406,7 +4406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7be3832499244bb4f809f4c148be40a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _joinCodeText: {fileID: 0}
+  _joinCodeText: {fileID: 2114097786}
 --- !u!1 &2032369897
 GameObject:
   m_ObjectHideFlags: 0
@@ -5000,7 +5000,7 @@ GameObject:
   - component: {fileID: 2114097787}
   - component: {fileID: 2114097786}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Lobby Code Input
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
